@@ -64,15 +64,19 @@ class JsonResponseHandler extends AbstractResponseHandler
     protected function parseMultiRecordResult($objectName, $data)
     {
         $this->resultCount = (int) $data['result']['total_results'];
+        $hasKey = array_key_exists($objectName, $data['result']);
 
-        if (0 === $this->resultCount) {
+        if (0 === $this->resultCount && !$hasKey) {
             $this->result = array();
         } else {
-            if (array_key_exists($objectName, $data['result'])) {
+            if ($hasKey) {
                 if ($this->resultHasOnlyOneRecord($objectName, $data)) {
                     $this->result = array($data['result'][$objectName]);
                 } else {
                     $this->result = $data['result'][$objectName];
+                }
+                if (0 === $this->resultCount) {
+                    $this->resultCount = count($this->result);
                 }
             } else {
                 $msg = sprintf('The response does not contain the expected object key \'%s\'', $objectName);

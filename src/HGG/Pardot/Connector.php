@@ -309,7 +309,7 @@ class Connector
         $curlCodes = null;
 
         $plugin = BackoffPlugin::getExponentialBackoff($retries, $httpCodes, $curlCodes);
-        $client = new Client($this->baseUrl);
+        $client = new Client($this->baseUrl, $this->httpClientOptions);
         $client->addSubscriber($plugin);
 
         return $client;
